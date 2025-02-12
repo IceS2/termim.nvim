@@ -1,85 +1,133 @@
-TABLE OF CONTENTS                                              *termim.nvim.toc*
-1.  Introduction               (|termim.nvim|)
-2.  Quickstart                 (|termim-quickstart|)
-3.  Commands                   (|termim-commands|)
-4.  Mappings                   (|termim-mappings|)
+*termim.txt*         For Neovim >= 0.8.0         Last change: 2025 February 12
 
-================================================================================
-INTRODUCTION                                                       *termim.nvim*
+==============================================================================
+Table of Contents                                   *termim-table-of-contents*
 
-termim.nvim improves your default neovim terminal experience while still keeping things super simple.
+  - Features                                                 |termim-features|
+  - Setup                                                       |termim-setup|
+  - Usage                                                       |termim-usage|
+  - What’s Next                                       |termim-what’s-next|
+  - ‍ Behind The Code                           |termim-‍-behind-the-code|
 
-Features
+termim.nvim improves your default neovim terminal experience, keeping it super
+simple.
 
+
+FEATURES                                                     *termim-features*
+
+- Auto enter insert mode when opening terminal
 - Cleans up unnecessary clutter from terminal UI
 - Auto closes terminal once process exits
 - Terminals do not mess with your buffer list
 - Handy commands to access full screen and split terminals
-- Extend commands easily with any program of your choice
+- Extend commands with any program of your choice
 
-================================================================================
-QUICKSTART                                                   *termim-quickstart*
 
-Requirements
+SETUP                                                           *termim-setup*
+
+
+REQUIREMENTS ~
 
 - neovim
 
-Installation
+
+INSTALLATION ~
 
 Add the following to your lazy/packer config
 
-```lua
-    -- Lazy
-    {
-        '2kabhishek/termim.nvim',
-        cmd = { 'Fterm', 'FTerm', 'Sterm', 'STerm', 'Vterm', 'VTerm' },
-    },
+>lua
+        -- Lazy
+        {
+            '2kabhishek/termim.nvim',
+            cmd = { 'Fterm', 'FTerm', 'Sterm', 'STerm', 'Vterm', 'VTerm' },
+        },
+    
+        -- Packer
+        use '2kabhishek/termim.nvim'
+<
 
-    -- Packer
-    use '2kabhishek/termim.nvim'
-```
 
-================================================================================
-COMMANDS                                                       *termim-commands*
+USAGE                                                           *termim-usage*
+
+
+COMMANDS ~
 
 `termim.nvim` adds the following commands:
 
-- `Fterm`: open terminal in new tab
-- `FTerm`: same as Fterm but stays open after process exits
-- `Sterm`: open terminal in new horizontal split
-- `STerm`: same as Sterm but stays open after process exits
-- `Vterm`: open terminal in new vertical split
-- `VTerm`: same as Vterm but stays open after process exits
+- `Fterm`open terminal in new tab
+- `FTerm`same as Fterm but stays open after process exits
+- `Sterm`open terminal in new horizontal split
+- `STerm`same as Sterm but stays open after process exits
+- `Vterm`open terminal in new vertical split
+- `VTerm`same as Vterm but stays open after process exits
 
-All the commands accept optional command as arg, if command is missing, your default shell will run
+All the commands accept optional command as arg, if command is missing, your
+default shell will run
 
-- `Fterm lazygit`: will open lazygit in a new tab
+- `Fterm lazygit`will open lazygit in a new tab
 
-================================================================================
-MAPPINGS                                                       *termim-mappings*
+
+MAPPINGS ~
 
 `termim.nvim` adds the following mappings:
 
-- <kbd>J</kbd> <kbd>J</kbd> — Return to normal mode in terminals, remap for `<C-\><C-n>`
+- J J — Return to normal mode in terminals, remap for `<C-\><C-n>`
 
-#### Recommended which-key Mappings
 
-Other than the standard commands, you can use which-key to create your own commands.
+RECOMMENDED WHICH-KEY MAPPINGS
 
-```lua
-    t = {
-        name = 'Terminal',
-        ['`'] = { '<cmd>Sterm<cr>', 'Horizontal Terminal' },
-        e = { '<cmd>Sterm iex<cr>', 'Elixir' },
-        g = { '<cmd>Fterm lazygit<cr>', 'Lazygit' },
-        n = { '<cmd>Sterm node<cr>', 'Node' },
-        p = { '<cmd>Sterm bpython<cr>', 'Python' },
-        r = { '<cmd>Sterm irb<cr>', 'Ruby' },
-        s = { '<cmd>Sterm<cr>', 'Horizontal Terminal' },
-        t = { '<cmd>Fterm<cr>', 'Terminal' },
-        v = { '<cmd>Vterm<cr>', 'Vertical Terminal' },
-    },
-```
+Other than the standard commands, you can use which-key to create your own
+commands.
 
-================================================================================
+>lua
+        t = {
+            name = 'Terminal',
+            ['`'] = { '<cmd>Sterm<cr>', 'Horizontal Terminal' },
+            e = { '<cmd>Sterm iex<cr>', 'Elixir' },
+            g = { '<cmd>Fterm lazygit<cr>', 'Lazygit' },
+            n = { '<cmd>Sterm node<cr>', 'Node' },
+            p = { '<cmd>Sterm bpython<cr>', 'Python' },
+            r = { '<cmd>Sterm irb<cr>', 'Ruby' },
+            s = { '<cmd>Sterm<cr>', 'Horizontal Terminal' },
+            t = { '<cmd>Fterm<cr>', 'Terminal' },
+            v = { '<cmd>Vterm<cr>', 'Vertical Terminal' },
+        },
+<
 
+
+WHAT’S NEXT                                           *termim-what’s-next*
+
+You tell me!
+
+
+‍ BEHIND THE CODE                               *termim-‍-behind-the-code*
+
+
+INSPIRATION ~
+
+Most terminal plugins offer a lot more than I needed, whereas I needed some
+small enhancements of the default neovim terminal experience.
+
+
+CHALLENGES/LEARNINGS ~
+
+- Figuring out some autogroup and buffer related APIs
+
+
+TOOLING ~
+
+- dots2k <https://github.com/2kabhishek/dots2k> — Dev Environment
+- mac2k <https://github.com/2kabhishek/mac2k> — Mac Dev Environment
+- nvim2k <https://github.com/2kabhishek/nvim2k> — Personalized Editor
+
+
+MORE INFO ~
+
+- tdo.nvim <https://github.com/2kabhishek/tdo.nvim> — Fast and simple note-taking in neovim
+- co-author.nvim <https://github.com/2kabhishek/co-author.nvim> — Search and add git co authors
+- nerdy.nvim <https://github.com/2kabhishek/nerdy.nvim> — Search and add nerd glyphs
+
+
+Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+
+vim:tw=78:ts=8:noet:ft=help:norl:
