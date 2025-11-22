@@ -5,8 +5,12 @@ termim.close_augroup = 'termim_auto_close'
 termim.auto_close = function()
     vim.api.nvim_create_autocmd({ 'TermClose' }, {
         group = vim.api.nvim_create_augroup(termim.close_augroup, { clear = true }),
-        callback = function()
-            vim.cmd('quit')
+        callback = function(event)
+          vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(event.buf) then
+              vim.api.nvim_buf_delete(event.buf, { force = true })
+            end
+          end)
         end,
     })
 end
