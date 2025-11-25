@@ -17,12 +17,20 @@ vim.api.nvim_create_autocmd({ 'TermOpen' }, {
     end,
 })
 
-vim.api.nvim_create_user_command('Fterm', function(input)
+vim.api.nvim_create_user_command('Tterm', function(input)
     termim.open(input.args)
 end, { nargs = '*' })
 
-vim.api.nvim_create_user_command('FTerm', function(input)
+vim.api.nvim_create_user_command('TTerm', function(input)
     termim.open(input.args, nil, true)
+end, { nargs = '*' })
+
+vim.api.nvim_create_user_command('Fterm', function(input)
+    termim.open(input.args, "float")
+end, { nargs = '*' })
+
+vim.api.nvim_create_user_command('FTerm', function(input)
+    termim.open(input.args, "float", true)
 end, { nargs = '*' })
 
 vim.api.nvim_create_user_command('Sterm', function(input)
