@@ -13,6 +13,7 @@ vim.api.nvim_create_autocmd({ 'TermOpen' }, {
         vim.cmd('startinsert!')
         vim.cmd('set cmdheight=1')
         vim.bo[event.buf].buflisted = false
+        vim.bo[event.buf].bufhidden = "wipe"
         vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = event.buf, silent = true })
     end,
 })
