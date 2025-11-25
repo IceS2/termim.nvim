@@ -13,7 +13,7 @@ vim.api.nvim_create_autocmd({ 'TermOpen' }, {
         vim.cmd('startinsert!')
         vim.cmd('set cmdheight=1')
         vim.bo[event.buf].buflisted = false
-        vim.bo[event.buf].bufhidden = "wipe"
+        vim.bo[event.buf].bufhidden = 'wipe'
         vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = event.buf, silent = true })
     end,
 })
@@ -27,11 +27,11 @@ vim.api.nvim_create_user_command('TTerm', function(input)
 end, { nargs = '*' })
 
 vim.api.nvim_create_user_command('Fterm', function(input)
-    termim.open(input.args, "float")
+    termim.open(input.args, 'float')
 end, { nargs = '*' })
 
 vim.api.nvim_create_user_command('FTerm', function(input)
-    termim.open(input.args, "float", true)
+    termim.open(input.args, 'float', true)
 end, { nargs = '*' })
 
 vim.api.nvim_create_user_command('Sterm', function(input)
