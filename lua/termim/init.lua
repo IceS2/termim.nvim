@@ -1,13 +1,19 @@
 local termim = {}
 
-termim.PersistentTerm = {
-    buf = nil,
-    win = nil,
+termim.persistent_map = {
+    float = { buf = nil, win = nil },
+    split = { buf = nil, win = nil },
+    vsplit = { buf = nil, win = nil },
+    tabnew = { buf = nil, win = nil },
 }
 
-
 termim.is_persistent = function(buf)
-    return termim.PersistentTerm.buf == buf
+    for _, term in pairs(termim.persistent_map) do
+        if term.buf == buf then
+            return true
+        end
+    end
+    return false
 end
 
 termim.close_augroup = 'termim_auto_close'
@@ -40,20 +46,62 @@ local get_float_win = function()
     local row = math.floor((vim.o.lines - height) / 2)
     local col = math.floor((vim.o.columns - width) / 2)
     return {
-      relative = "editor",
-      width = width,
-      height = height,
-      row = row,
-      col = col,
-      style = "minimal",
-      border = "single"
+        relative = 'editor',
+        width = width,
+        height = height,
+        row = row,
+        col = col,
+        style = 'minimal',
+        border = 'single',
     }
 end
 
-termim.open = function(command, split_dir, keep_open, persist)
-    persist = persist or false
-    local buf = nil
+local open_window = function(buf, split_dir)
     local win = nil
+    if split_dir == 'float' then
+        win = vim.api.nvim_open_win(buf, true, get_float_win())
+    else
+        vim.cmd(split_dir)
+        win = vim.api.nvim_get_current_win()
+        vim.api.nvim_win_set_buf(win, buf)
+    end
+    return win
+end
+
+local create_terminal = function(buf, command, split_dir)
+    local win = open_window(buf, split_dir)
+    vim.cmd('terminal ' .. command)
+    return buf, win
+end
+
+local toggle_persistent_terminal = function(command, split_dir)
+    termim.keep_open()
+
+    local persistent_term = termim.persistent_map[split_dir]
+
+    if persistent_term.buf == nil or not vim.api.nvim_buf_is_valid(persistent_term.buf) then
+        local buf = vim.api.nvim_create_buf(true, false)
+        persistent_term.buf = buf
+        local _, win = create_terminal(buf, command, split_dir)
+        persistent_term.win = win
+    elseif persistent_term.win ~= nil and vim.api.nvim_win_is_valid(persistent_term.win) then
+        vim.api.nvim_win_close(persistent_term.win, true)
+        persistent_term.win = nil
+    else
+        local win = open_window(persistent_term.buf, split_dir)
+        persistent_term.win = win
+        vim.cmd('startinsert!')
+    end
+end
+
+local open_ephemeral_terminal = function(command, split_dir)
+    termim.auto_close()
+    local buf = vim.api.nvim_create_buf(false, true)
+    create_terminal(buf, command, split_dir)
+end
+
+termim.open = function(command, split_dir, persistent)
+    persistent = persistent or false
 
     if command == '' or command == nil then
         command = vim.o.shell
@@ -63,52 +111,10 @@ termim.open = function(command, split_dir, keep_open, persist)
         split_dir = 'tabnew'
     end
 
-    if keep_open then
-        termim.keep_open()
+    if persistent then
+        toggle_persistent_terminal(command, split_dir)
     else
-        termim.auto_close()
-    end
-
-    if split_dir == "float" then
-        buf = vim.api.nvim_create_buf(persist, not persist)
-        win = vim.api.nvim_open_win(buf, true, get_float_win())
-        vim.api.nvim_set_current_win(win)
-        if persist then
-            termim.PersistentTerm.buf = buf
-            termim.PersistentTerm.win = win
-        end
-        vim.cmd("terminal " .. command)
-    else
-        buf = vim.api.nvim_create_buf(persist, not persist)
-        vim.cmd(split_dir)
-        win = vim.api.nvim_get_current_win()
-        vim.api.nvim_win_set_buf(win, buf)
-        vim.api.nvim_set_current_win(win)
-        if persist then
-            termim.PersistentTerm.buf = buf
-            termim.PersistentTerm.win = win
-        end
-        vim.cmd("terminal " .. command)
-    end
-end
-
-termim.toggle = function(split_dir)
-    if termim.PersistentTerm.buf == nil then
-        termim.open(nil, split_dir, true, true)
-    elseif termim.PersistentTerm.win ~= nil and vim.api.nvim_win_is_valid(termim.PersistentTerm.win) then
-        vim.api.nvim_win_close(termim.PersistentTerm.win, true)
-        termim.PersistentTerm.win = nil
-    else
-        local win = nil
-        if split_dir == "float" then
-          win = vim.api.nvim_open_win(termim.PersistentTerm.buf, true, get_float_win())
-        else
-            vim.cmd(split_dir)
-            win = vim.api.nvim_get_current_win()
-            vim.api.nvim_win_set_buf(win, termim.PersistentTerm.buf)
-        end
-        vim.cmd("startinsert!")
-        termim.PersistentTerm.win = win
+        open_ephemeral_terminal(command, split_dir)
     end
 end
 
